@@ -1,0 +1,20 @@
+<ion-tabs>
+  <ion-router-outlet></ion-router-outlet>
+
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="camera" [routerLink]="['/tabs/camera']">
+      <ion-icon name="camera"></ion-icon>
+      <ion-label>Photo</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="gallery" [routerLink]="['/tabs/gallery']">
+      <ion-icon name="images"></ion-icon>
+      <ion-label>Galerie</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="map" [routerLink]="['/tabs/map']">
+      <ion-icon name="map"></ion-icon>
+      <ion-label>Carte</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>

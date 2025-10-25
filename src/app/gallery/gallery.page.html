@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Galerie</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="6" *ngFor="let photo of photoService.photos">
+        <ion-card (click)="open(photo)">
+          <ion-img [src]="photo.webviewPath"></ion-img>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Aperçu plein écran -->
+  <ion-modal [isOpen]="!!selected" (didDismiss)="closeModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Photo</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeModal()">
+              <ion-icon name="close"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content fullscreen>
+        <div class="viewer">
+          <img *ngIf="selected" [src]="selected.webviewPath" />
+        </div>
+
+        <ion-footer>
+          <ion-toolbar>
+            <ion-buttons slot="start">
+              <ion-button color="danger" (click)="removeSelected()">
+                <ion-icon slot="start" name="trash"></ion-icon>
+                Supprimer
+              </ion-button>
+            </ion-buttons>
+            <ion-buttons slot="end">
+              <ion-button (click)="closeModal()">Fermer</ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-footer>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>
