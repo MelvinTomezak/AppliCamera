@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Caméra</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="camera-page ion-padding" style="--padding-top:16px;">
+  <!-- Notices de permission (texte seulement) -->
+  <div style="width:100%;max-width:720px;margin:8px auto;">
+    <ion-card *ngIf="cameraDenied" color="warning" class="perm-card">
+      <ion-card-content>
+        <strong>Caméra désactivée</strong>
+        <div>Pour prendre des photos, autorisez l'accès à la caméra dans les paramètres de l'application.</div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card *ngIf="locationDenied" color="warning" class="perm-card" style="margin-top:8px;">
+      <ion-card-content>
+        <strong>Géolocalisation désactivée</strong>
+        <div>Pour enregistrer l'emplacement des photos, activez la localisation dans les paramètres de l'application.</div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:center;gap:18px;margin-top:8px;">
+    <!-- Bouton unique pour prendre la photo -->
+    <ion-button id="take-btn" expand="block" color="primary" (click)="onTake()" class="large-btn" style="max-width:420px;height:64px;font-weight:700;">
+      <ion-icon name="camera" slot="start"></ion-icon>
+      Prendre une photo
+    </ion-button>
+
+    <!-- Aperçu seulement (pas de confirmer/annuler ici) -->
+    <div *ngIf="previewOpen" style="width:100%;max-width:520px;text-align:center;">
+      <ion-img [src]="previewUrl" alt="Aperçu" style="width:100%;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.08)"></ion-img>
+      <div style="margin-top:8px;color:var(--ion-color-medium);font-size:0.9rem;">
+        L'image est affichée en aperçu. La sauvegarde se fait automatiquement ou via la galerie.
+      </div>
+    </div>
+  </div>
+</ion-content>

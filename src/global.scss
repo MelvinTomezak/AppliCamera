@@ -1,37 +1,146 @@
+/* ==============================
+   GLOBAL STYLES – Anti-overlay
+   ============================== */
+
+@import 'leaflet/dist/leaflet.css';
+
+/* 1) Retirer totalement du flux les pages cachées par le router */
+ion-router-outlet > .ion-page[aria-hidden="true"],
+ion-router-outlet > .ion-page[hidden],
+ion-router-outlet > *[hidden] {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+/* 2) Neutraliser le click-block résiduel d’Ionic (pendant/Après transitions) */
+ion-app .click-block {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+/* 3) Neutraliser tous les backdrops/overlays cachés ou non-actifs */
+ion-backdrop,
+.backdrop,
+.ion-overlay-hidden,
+ion-modal:not([is-open="true"]),
+ion-popover:not([is-open="true"]),
+ion-action-sheet:not([is-open="true"]),
+ion-alert:not([is-open="true"]),
+ion-loading:not([is-open="true"]),
+ion-toast:not([is-open="true"]) {
+  display: none !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+}
+
+/* 4) Ordre des couches : l'UI (header / content / tab-bar) passe au-dessus du contenu */
+ion-header { position: relative; z-index: 5; }
+ion-content { position: relative; z-index: 1; }
+
+/* Isoler ion-tabs pour éviter des empilements bizarres */
+ion-tabs { contain: layout paint size style; }
+ion-tabs > ion-router-outlet { position: relative; z-index: 1; }
+ion-tabs > ion-tab-bar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 10;
+  --background: var(--ion-color-light);
+  --color: var(--ion-color-medium);
+  --color-selected: var(--ion-color-primary);
+  box-shadow: 0 -6px 16px rgba(0,0,0,0.06);
+}
+
+/* 5) Toujours autoriser l’interaction sur les contrôles */
+ion-button, ion-tab-button, ion-segment, ion-toolbar, ion-item {
+  pointer-events: auto !important;
+}
+
+/* 6) Carte Leaflet : reste sous l’UI, ne déborde pas et ne crée pas d’overlay */
+.leaflet-container, .map {
+  z-index: 0 !important;
+  pointer-events: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* (Optionnel) DEBUG : visualiser les overlays (décommente quelques secondes si besoin) */
 /*
- * App Global CSS
- * ----------------------------------------------------------------------------
- * Put style rules here that you want to apply globally. These styles are for
- * the entire app and not just one component. Additionally, this file can be
- * used as an entry point to import other CSS/Sass files to be included in the
- * output CSS.
- * For more information on global stylesheets, visit the documentation:
- * https://ionicframework.com/docs/layout/global-stylesheets
- */
+* { outline: 1px solid rgba(255,0,0,0.12); }
+ion-backdrop, .backdrop, ion-app .click-block {
+  background: rgba(255,0,0,0.12) !important;
+}
+*/
+:host {
+  ion-content { position: relative; z-index: 5; }
+}
 
-/* Core CSS required for Ionic components to work properly */
-@import "@ionic/angular/css/core.css";
+.hero-card {
+  border-radius: var(--app-radius);
+  overflow: hidden;
+  box-shadow: 0 14px 40px rgba(0,0,0,0.12);
+}
 
-/* Basic CSS for apps built with Ionic */
-@import "@ionic/angular/css/normalize.css";
-@import "@ionic/angular/css/structure.css";
-@import "@ionic/angular/css/typography.css";
-@import "@ionic/angular/css/display.css";
+ion-card-title { font-size: 1.4rem; }
+ion-card-subtitle { margin-top: 6px; color: var(--ion-color-medium); }
 
-/* Optional CSS utils that can be commented out */
-@import "@ionic/angular/css/padding.css";
-@import "@ionic/angular/css/float-elements.css";
-@import "@ionic/angular/css/text-alignment.css";
-@import "@ionic/angular/css/text-transformation.css";
-@import "@ionic/angular/css/flex-utils.css";
+.hero-cta {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 10px;
+}
 
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
+@media (min-width: 540px) {
+  .hero-cta { grid-template-columns: repeat(3, 1fr); }
+}
+/* === Loader global (overlay) — n'intercepte plus les clics === */
+.app-loading {
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+  background: color-mix(in oklab, var(--ion-background-color) 94%, #000);
+  backdrop-filter: blur(2px);
+  pointer-events: none;             /* ⬅️ NE CAPTE PAS LES CLICS */
+}
 
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import "@ionic/angular/css/palettes/dark.system.css";
+.loading-box {
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+  padding: 24px; border-radius: 20px;
+  background: color-mix(in oklab, var(--ion-background-color) 86%, #000);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+  pointer-events: none;             /* ⬅️ idem */
+}
+
+.loading-logo,
+.loading-spinner { pointer-events: none; }  /* ⬅️ sécurité */
+/* Leaflet photo preview tooltip — GLOBAL styles */
+.leaflet-tooltip.photo-tooltip {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  pointer-events: none !important;
+  max-width: none !important;           /* <- empêche l'élargissement à 300px */
+}
+
+.leaflet-tooltip.photo-tooltip .leaflet-tooltip-content {
+  margin: 0 !important;
+}
+
+.map-photo-preview {
+  width: 56px !important;                /* ajuste la taille ici */
+  height: 56px !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
+  border: 2px solid #fff !important;
+  box-shadow: 0 3px 8px rgba(0,0,0,.35) !important;
+}
+
+.map-photo-preview img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}

@@ -1,5 +1,30 @@
 ion-tab-bar {
-  --background: #1e1e1e;
-  --color: #ccc;
-  --color-selected: #fff;
+  --background: var(--ion-color-light);
+  --color: var(--ion-color-medium);
+  --color-selected: var(--ion-color-primary);
+  box-shadow: 0 -6px 16px rgba(0, 0, 0, 0.06);
+}
+
+/* Styles pour le bouton Accueil flottant (bas gauche) */
+.home-fab-wrap {
+  position: absolute;
+  bottom: 18px; /* distance depuis le bas */
+  left: 16px;   /* distance depuis la gauche */
+  z-index: 999;
+  pointer-events: auto;
+}
+
+.home-fab {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(2,12,36,0.12);
+}
+
+/* Ajustement pour grand écran */
+@media (min-width: 720px) {
+  .home-fab-wrap { bottom: 24px; left: 20px; }
 }

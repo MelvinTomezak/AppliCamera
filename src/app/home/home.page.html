@@ -1,23 +1,54 @@
-<ion-header>
+<ion-header translucent>
   <ion-toolbar>
-    <ion-title>Caméra</ion-title>
+    <ion-title>MaPhotoApp</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-button expand="block" size="large" (click)="takePhoto()">
-    <ion-icon slot="start" name="camera"></ion-icon>
-    Prendre une photo
-  </ion-button>
+<ion-content fullscreen class="home-root">
+  <section class="hero" role="banner" aria-label="Bandeau principal">
+    <div class="hero-inner">
+      <div class="logo-and-title">
+        <ion-icon name="camera" class="hero-inline-icon" aria-hidden="true"></ion-icon>
+        <div class="title-wrap">
+          <h1 class="hero-title">Capturer. Garder. Partager.</h1>
+          <p class="hero-sub">Simple, rapide et locale — vos photos restent sur l’appareil.</p>
+        </div>
+      </div>
 
-  <ion-list inset>
-    <ion-list-header>Dernières photos</ion-list-header>
-    <ion-grid>
-      <ion-row>
-        <ion-col size="6" *ngFor="let photo of photoService.photos | slice:0:6">
-          <ion-img [src]="photo.webviewPath"></ion-img>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </ion-list>
+      <div class="hero-ctas" role="navigation" aria-label="Actions principales">
+        <!-- on garde des (click) comme dans ton code d’origine -->
+        <ion-button expand="block" class="big-cta primary" (click)="openCamera()">
+          <ion-icon name="camera" slot="start"></ion-icon>
+          Prendre une photo
+        </ion-button>
+
+        <ion-button expand="block" class="big-cta outline" fill="outline" (click)="openGallery()">
+          <ion-icon name="images" slot="start"></ion-icon>
+          Galerie
+        </ion-button>
+
+        <!-- remplace l’ancien Favoris par Carte -->
+        <ion-button expand="block" class="big-cta clear" fill="clear" (click)="openMap()">
+          <ion-icon name="map" slot="start"></ion-icon>
+          Carte
+        </ion-button>
+      </div>
+    </div>
+  </section>
+
+  <section class="favorites">
+    <h3 class="section-title">Favoris <small class="fav-count">{{ favorites.length }}</small></h3>
+
+    <div *ngIf="favorites?.length; else noFavs" class="thumb-row" role="list">
+      <div class="thumb" *ngFor="let p of favorites" (click)="viewPhoto(p.id)" tabindex="0" role="button" aria-label="Voir photo">
+        <ion-img [src]="p.webPath || p.filePath" class="thumb-img" alt="photo"></ion-img>
+      </div>
+    </div>
+
+    <ng-template #noFavs>
+      <div class="empty-note">
+        <ion-text color="medium">Aucun favori pour l'instant — marquez une photo comme favorite.</ion-text>
+      </div>
+    </ng-template>
+  </section>
 </ion-content>

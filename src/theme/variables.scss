@@ -1,2 +1,29 @@
-// For information on how to create your own theme, please see:
-// http://ionicframework.com/docs/theming/
+/* Palette Ionic + ton accent */
+:root {
+  --ion-color-primary: #5865F2;        /* indigo moderne */
+  --ion-color-primary-rgb: 88, 101, 242;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #4e5ad8;
+  --ion-color-primary-tint: #6b76f4;
+
+  --ion-color-secondary: #00c2a8;
+  --ion-color-tertiary:  #ff6b6b;
+
+  --ion-background-color: #ffffff;
+  --ion-text-color: #1a1a1e;
+  --ion-toolbar-background: #ffffff;
+  --ion-tab-bar-background: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ion-color-primary: #7c88ff;
+    --ion-color-primary-rgb: 124, 136, 255;
+
+    --ion-background-color: #0b0b0f;      /* noir doux */
+    --ion-text-color: #e7e7ea;
+    --ion-toolbar-background: #0f0f15;
+    --ion-tab-bar-background: #0f0f15;
+  }
+}

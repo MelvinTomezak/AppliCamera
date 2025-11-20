@@ -1,18 +1,25 @@
 <ion-tabs>
   <ion-router-outlet></ion-router-outlet>
 
+  <!-- Bouton flottant "Accueil" (en bas à gauche) -->
+  <ion-fab vertical="bottom" horizontal="start" slot="fixed" class="home-fab-wrap">
+    <ion-fab-button (click)="goHome()" color="primary" class="home-fab" title="Accueil" aria-label="Retour à l'accueil">
+      <ion-icon name="home"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
   <ion-tab-bar slot="bottom">
-    <ion-tab-button tab="camera" [routerLink]="['/tabs/camera']">
+    <ion-tab-button tab="camera" href="/tabs/camera">
       <ion-icon name="camera"></ion-icon>
-      <ion-label>Photo</ion-label>
+      <ion-label>Caméra</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="gallery" [routerLink]="['/tabs/gallery']">
+    <ion-tab-button tab="gallery" href="/tabs/gallery">
       <ion-icon name="images"></ion-icon>
       <ion-label>Galerie</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="map" [routerLink]="['/tabs/map']">
+    <ion-tab-button tab="map" href="/tabs/map">
       <ion-icon name="map"></ion-icon>
       <ion-label>Carte</ion-label>
     </ion-tab-button>

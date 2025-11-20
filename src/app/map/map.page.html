@@ -1,9 +1,64 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Carte</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content fullscreen class="map-content">
+  <!-- Carte -->
+  <div #map id="map" class="map" role="region" aria-label="Carte"></div>
 
-<ion-content>
-  <div id="map"></div>
+  <!-- Bouton Localiser -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="loc-fab">
+    <ion-fab-button color="primary" title="Localiser" aria-label="Localiser" (click)="onLocate()">
+      <ion-icon name="locate"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <!-- ✅ Lightbox (mêmes styles/structure que la Galerie) -->
+  <div class="lightbox" *ngIf="lightboxOpen" (click)="closeLightbox()">
+    <div class="lightbox-inner" (click)="$event.stopPropagation()">
+      <!-- Fermer -->
+      <button class="lb-close" (click)="closeLightbox()" aria-label="Fermer">
+        <ion-icon name="close"></ion-icon>
+      </button>
+
+      <!-- Scène image (confinée) -->
+      <div class="lb-stage">
+        <img class="lb-image" [src]="selectedPhoto?.webPath" alt="Photo" />
+      </div>
+
+      <!-- Détails -->
+      <div class="lb-details">
+        <div class="row">
+          <ion-icon name="calendar"></ion-icon>
+          <span>{{ selectedPhoto?.createdAt | date:'mediumDate' }}</span>
+        </div>
+        <div class="row">
+          <ion-icon name="time"></ion-icon>
+          <span>{{ selectedPhoto?.createdAt | date:'shortTime' }}</span>
+        </div>
+        <div class="row">
+          <ion-icon name="location"></ion-icon>
+          <ng-container *ngIf="selectedPhoto?.address; else coordsOrNA">
+            <span>{{ selectedPhoto?.address }}</span>
+          </ng-container>
+          <ng-template #coordsOrNA>
+            <span *ngIf="selectedPhoto?.coords; else unknown">
+              {{ selectedPhoto?.coords?.lat | number:'1.5-5' }},
+              {{ selectedPhoto?.coords?.lng | number:'1.5-5' }}
+            </span>
+            <ng-template #unknown>
+              <span>Lieu non disponible</span>
+            </ng-template>
+          </ng-template>
+          <ion-spinner *ngIf="geocoding" class="addr-spinner"></ion-spinner>
+        </div>
+
+        <!-- Actions (mêmes icônes que sur les vignettes) -->
+        <div class="lb-actions">
+          <button class="icon-btn" (click)="onToggleLike(selectedPhoto!, $event)" title="Favori">
+            <ion-icon [name]="selectedPhoto?.liked ? 'heart' : 'heart-outline'"></ion-icon>
+          </button>
+          <button class="icon-btn danger" (click)="onDelete(selectedPhoto!, $event)" title="Supprimer">
+            <ion-icon name="trash"></ion-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </ion-content>

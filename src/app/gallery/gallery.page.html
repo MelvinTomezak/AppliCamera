@@ -1,53 +1,97 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-title>Galerie</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content [fullscreen]="true" class="ion-padding">
+  <!-- Sélecteur d'album -->
+  <ion-segment [value]="album" (ionChange)="onAlbumChange($event)" class="album-switch">
+    <ion-segment-button value="all">
+      <ion-label>Toutes</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="fav">
+      <ion-label>Favoris</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <!-- Grille -->
   <ion-grid>
     <ion-row>
-      <ion-col size="6" *ngFor="let photo of photoService.photos">
-        <ion-card (click)="open(photo)">
-          <ion-img [src]="photo.webviewPath"></ion-img>
+      <ion-col size="6" *ngFor="let photo of filteredPhotos()">
+        <ion-card class="photo-card" tabindex="0">
+          <!-- image -->
+          <img [src]="photo.webPath" [alt]="photo.filePath" />
+
+          <!-- actions overlay -->
+          <div class="overlay-actions">
+            <button class="icon-btn" (click)="onToggleLike(photo, $event)" title="Favori">
+              <ion-icon [name]="photo.liked ? 'heart' : 'heart-outline'"></ion-icon>
+            </button>
+            <button class="icon-btn" (click)="openLightbox(photo, $event)" title="Agrandir">
+              <ion-icon name="expand"></ion-icon>
+            </button>
+            <button class="icon-btn danger" (click)="onDelete(photo, $event)" title="Supprimer">
+              <ion-icon name="trash"></ion-icon>
+            </button>
+          </div>
+
+          <!-- bandeau infos -->
+          <div class="info-band">
+            <div class="line">{{ shortInfo(photo) }}</div>
+          </div>
         </ion-card>
       </ion-col>
     </ion-row>
   </ion-grid>
 
-  <!-- Aperçu plein écran -->
-  <ion-modal [isOpen]="!!selected" (didDismiss)="closeModal()">
-    <ng-template>
-      <ion-header>
-        <ion-toolbar>
-          <ion-title>Photo</ion-title>
-          <ion-buttons slot="end">
-            <ion-button (click)="closeModal()">
-              <ion-icon name="close"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
+  <!-- ✅ Lightbox overlay (plein écran, flou en arrière-plan) -->
+  <div class="lightbox" *ngIf="lightboxOpen" (click)="closeLightbox()">
+    <div class="lightbox-inner" (click)="$event.stopPropagation()">
+      <!-- Bouton fermer -->
+      <button class="lb-close" (click)="closeLightbox()" aria-label="Fermer">
+        <ion-icon name="close"></ion-icon>
+      </button>
 
-      <ion-content fullscreen>
-        <div class="viewer">
-          <img *ngIf="selected" [src]="selected.webviewPath" />
+      <!-- Image agrandie -->
+      <img class="lb-image" [src]="selectedPhoto?.webPath" alt="Photo" />
+
+      <!-- Panneau d’infos -->
+      <div class="lb-details">
+        <div class="row">
+          <ion-icon name="calendar"></ion-icon>
+          <span>{{ selectedPhoto?.createdAt | date:'mediumDate' }}</span>
+        </div>
+        <div class="row">
+          <ion-icon name="time"></ion-icon>
+          <span>{{ selectedPhoto?.createdAt | date:'shortTime' }}</span>
+        </div>
+        <div class="row">
+          <ion-icon name="location"></ion-icon>
+          <ng-container *ngIf="selectedPhoto?.address; else coordsOrNA">
+            <span>{{ selectedPhoto?.address }}</span>
+          </ng-container>
+          <ng-template #coordsOrNA>
+            <span *ngIf="selectedPhoto?.coords; else unknown">
+              {{ selectedPhoto?.coords?.lat | number:'1.5-5' }},
+              {{ selectedPhoto?.coords?.lng | number:'1.5-5' }}
+            </span>
+            <ng-template #unknown>
+              <span>Lieu non disponible</span>
+            </ng-template>
+          </ng-template>
+          <ion-spinner *ngIf="geocoding" class="addr-spinner"></ion-spinner>
         </div>
 
-        <ion-footer>
-          <ion-toolbar>
-            <ion-buttons slot="start">
-              <ion-button color="danger" (click)="removeSelected()">
-                <ion-icon slot="start" name="trash"></ion-icon>
-                Supprimer
-              </ion-button>
-            </ion-buttons>
-            <ion-buttons slot="end">
-              <ion-button (click)="closeModal()">Fermer</ion-button>
-            </ion-buttons>
-          </ion-toolbar>
-        </ion-footer>
-      </ion-content>
-    </ng-template>
-  </ion-modal>
+        <!-- Actions dans la lightbox -->
+        <div class="lb-actions">
+          <ion-button fill="outline" (click)="onToggleLike(selectedPhoto!)">
+            <ion-icon [name]="selectedPhoto?.liked ? 'heart' : 'heart-outline'" slot="start"></ion-icon>
+            {{ selectedPhoto?.liked ? 'Retirer des favoris' : 'Ajouter aux favoris' }}
+          </ion-button>
+          <ion-button color="danger" (click)="onDelete(selectedPhoto)">Supprimer</ion-button>
+        </div>
+      </div>
+    </div>
+  </div>
 </ion-content>
